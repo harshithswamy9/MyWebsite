@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { usePortal } from '../context/PortalContext';
-import { X, Upload, Check, Sparkles, Image as ImageIcon, Phone, User, AlertCircle } from 'lucide-react';
+import { X, Upload, Check, Sparkles, Image as ImageIcon, Phone, User, AlertCircle, Loader2 } from 'lucide-react';
 import { Category, ItemStatus } from '../types';
+import { compressImage } from '../utils/imageCompressor';
 
 const CATEGORIES: Category[] = [
   'Electronics',
@@ -47,19 +48,29 @@ export const ReportModal: React.FC = () => {
   const [customUrl, setCustomUrl] = useState('');
   const [imageTab, setImageTab] = useState<'upload' | 'url'>('upload');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isCompressing, setIsCompressing] = useState(false);
 
   if (!isReportModalOpen) return null;
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          setImageUrl(reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsCompressing(true);
+        const compressed = await compressImage(file, 1024, 1024, 0.75);
+        setImageUrl(compressed);
+      } catch (err) {
+        console.warn('Image compression fallback:', err);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === 'string') {
+            setImageUrl(reader.result);
+          }
+        };
+        reader.readAsDataURL(file);
+      } finally {
+        setIsCompressing(false);
+      }
     }
   };
 
@@ -273,7 +284,12 @@ export const ReportModal: React.FC = () => {
 
             {imageTab === 'upload' ? (
               <div className="p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 text-center hover:border-blue-500 transition">
-                {imageUrl ? (
+                {isCompressing ? (
+                  <div className="py-5 flex flex-col items-center justify-center text-blue-600 gap-2">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <span className="text-xs font-semibold">Optimizing photo for mobile...</span>
+                  </div>
+                ) : imageUrl ? (
                   <div className="flex items-center justify-center gap-4">
                     <img
                       src={imageUrl}

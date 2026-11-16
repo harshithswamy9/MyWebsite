@@ -28,6 +28,7 @@ import {
   Check,
 } from 'lucide-react';
 import { CAMPUS_PRESET_IMAGES } from '../data/initialData';
+import { compressImage } from '../utils/imageCompressor';
 
 export const AdminPortal: React.FC = () => {
   const {
@@ -95,16 +96,22 @@ export const AdminPortal: React.FC = () => {
     setTimeout(() => setPinSuccessMsg(''), 3000);
   };
 
-  const handleHeroFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHeroFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          updateSiteConfig({ heroImage: reader.result });
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressed = await compressImage(file, 1920, 1080, 0.8);
+        updateSiteConfig({ heroImage: compressed });
+      } catch (err) {
+        console.warn('Hero image compression fallback:', err);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === 'string') {
+            updateSiteConfig({ heroImage: reader.result });
+          }
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
