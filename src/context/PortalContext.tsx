@@ -144,9 +144,9 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // 1. Always save to local storage immediately
     try {
-      localStorage.setItem('cmrtc_items_v4', JSON.stringify(newItems));
-      localStorage.setItem('cmrtc_config_v4', JSON.stringify(newConfig));
-      localStorage.setItem('cmrtc_claims_v4', JSON.stringify(newClaims));
+      localStorage.setItem('cmrtc_items_v5', JSON.stringify(newItems));
+      localStorage.setItem('cmrtc_config_v5', JSON.stringify(newConfig));
+      localStorage.setItem('cmrtc_claims_v5', JSON.stringify(newClaims));
     } catch {
       // ignore
     }
@@ -258,15 +258,19 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       // If not loaded from cloud/server API, check localStorage
       if (!loaded) {
         try {
-          const savedItems = localStorage.getItem('cmrtc_items_v4');
+          const savedItems = localStorage.getItem('cmrtc_items_v5') || localStorage.getItem('cmrtc_items_v4');
           if (savedItems) {
             setItems(JSON.parse(savedItems));
           }
-          const savedConfig = localStorage.getItem('cmrtc_config_v4');
+          const savedConfig = localStorage.getItem('cmrtc_config_v5') || localStorage.getItem('cmrtc_config_v4');
           if (savedConfig) {
-            setSiteConfig(JSON.parse(savedConfig));
+            const parsed = JSON.parse(savedConfig);
+            if (!parsed.heroImage || parsed.heroImage.includes('unsplash.com')) {
+              parsed.heroImage = INITIAL_SITE_CONFIG.heroImage;
+            }
+            setSiteConfig((prev) => ({ ...prev, ...parsed }));
           }
-          const savedClaims = localStorage.getItem('cmrtc_claims_v4');
+          const savedClaims = localStorage.getItem('cmrtc_claims_v5') || localStorage.getItem('cmrtc_claims_v4');
           if (savedClaims) {
             setClaimRequests(JSON.parse(savedClaims));
           }

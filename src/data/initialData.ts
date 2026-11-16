@@ -2,8 +2,14 @@ import { Item, SiteConfig } from '../types';
 
 export const CAMPUS_PRESET_IMAGES = [
   {
+    id: 'campus-cmrtc-main',
+    name: 'CMRTC Main Campus (Official College Building)',
+    url: '/cmrtc-campus.jpeg',
+    description: 'CMR Technical Campus Academic Block and Grounds',
+  },
+  {
     id: 'campus-brick-quad',
-    name: 'Brick Quad & Students (Reference Image)',
+    name: 'Brick Quad & Students',
     url: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1920&q=80',
     description: 'Vibrant college campus with brick architecture, trees, and students walking',
   },
@@ -38,7 +44,7 @@ export const INITIAL_SITE_CONFIG: SiteConfig = {
   collegeName: 'CMR Technical Campus (CMRTC)',
   tagline: 'Lost something? CMRTC ReFind is here to help.',
   subtagline: 'Report lost or found belongings and reconnect with your CMRTC campus community.',
-  heroImage: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1920&q=80',
+  heroImage: '/cmrtc-campus.jpeg',
   heroOverlayOpacity: 45,
   themeColor: 'blue',
   announcement: '📢 Welcome to CMRTC ReFind – Report or claim lost belongings across campus.',

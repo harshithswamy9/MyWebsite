@@ -1,0 +1,8 @@
+node_modules/
+.vite.log
+.vite.pid
+.cloudflared.log
+.cloudflared.pid
+.systemd.log
+*.log
+.DS_Store
