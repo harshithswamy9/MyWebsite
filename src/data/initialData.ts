@@ -50,7 +50,7 @@ export const INITIAL_SITE_CONFIG: SiteConfig = {
   announcement: '📢 Welcome to CMRTC ReFind – Report or claim lost belongings across campus.',
   showAnnouncement: true,
   adminPin: 'cmrtc123',
-  cloudDbUrl: '',
+  cloudDbUrl: 'https://cmrtc-refind-default-rtdb.firebaseio.com/portalData.json',
   contactDesk: {
     location: 'CMRTC Campus, Main Academic Block, Ground Floor (Admin / Security Desk)',
     phone: '+91 91007 60559',

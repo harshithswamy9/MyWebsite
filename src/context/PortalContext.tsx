@@ -97,6 +97,14 @@ export const getEffectiveCloudUrl = (config?: SiteConfig): string => {
   return '';
 };
 
+// Helper to normalize Firebase data (handles both JSON arrays and Firebase sparse objects)
+export const parseFirebaseArray = <T,>(val: any): T[] => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.filter(Boolean);
+  if (typeof val === 'object') return Object.values(val);
+  return [];
+};
+
 export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<Item[]>(INITIAL_ITEMS);
   const [siteConfig, setSiteConfig] = useState<SiteConfig>(INITIAL_SITE_CONFIG);
@@ -206,7 +214,8 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (res.ok) {
             const data = await res.json();
             if (data && typeof data === 'object') {
-              if (data.items && Array.isArray(data.items)) setItems(data.items);
+              const remoteItems = parseFirebaseArray<Item>(data.items);
+              setItems(remoteItems);
               if (data.siteConfig) {
                 setSiteConfig((prev) => ({
                   ...prev,
@@ -214,7 +223,8 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                   cloudDbUrl: prev.cloudDbUrl || cloudUrl,
                 }));
               }
-              if (data.claimRequests && Array.isArray(data.claimRequests)) setClaimRequests(data.claimRequests);
+              const remoteClaims = parseFirebaseArray<ClaimRequest>(data.claimRequests);
+              setClaimRequests(remoteClaims);
               setCloudStatus('connected');
               setLastSavedAt('Synced with Cloud DB');
               loaded = true;
@@ -291,12 +301,9 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         if (res.ok) {
           const data = await res.json();
           if (data && typeof data === 'object') {
-            if (
-              data.items &&
-              Array.isArray(data.items) &&
-              JSON.stringify(data.items) !== JSON.stringify(stateRef.current.items)
-            ) {
-              setItems(data.items);
+            const remoteItems = parseFirebaseArray<Item>(data.items);
+            if (JSON.stringify(remoteItems) !== JSON.stringify(stateRef.current.items)) {
+              setItems(remoteItems);
             }
             if (
               data.siteConfig &&
@@ -309,13 +316,9 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 cloudDbUrl: prev.cloudDbUrl || data.siteConfig.cloudDbUrl || cloudUrl,
               }));
             }
-            if (
-              data.claimRequests &&
-              Array.isArray(data.claimRequests) &&
-              JSON.stringify(data.claimRequests) !==
-                JSON.stringify(stateRef.current.claimRequests)
-            ) {
-              setClaimRequests(data.claimRequests);
+            const remoteClaims = parseFirebaseArray<ClaimRequest>(data.claimRequests);
+            if (JSON.stringify(remoteClaims) !== JSON.stringify(stateRef.current.claimRequests)) {
+              setClaimRequests(remoteClaims);
             }
             if (cloudUrl) setCloudStatus('connected');
           }
