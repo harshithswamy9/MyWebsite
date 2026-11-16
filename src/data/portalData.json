@@ -1,0 +1,21 @@
+{
+  "siteConfig": {
+    "portalName": "CMRTC ReFind",
+    "collegeName": "CMR Technical Campus (CMRTC)",
+    "tagline": "Lost something? CMRTC ReFind is here to help.",
+    "subtagline": "Report lost or found belongings and reconnect with your CMRTC campus community.",
+    "heroImage": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1920&q=80",
+    "heroOverlayOpacity": 45,
+    "themeColor": "blue",
+    "announcement": "📢 Welcome to CMRTC ReFind – Report or claim lost belongings across campus.",
+    "showAnnouncement": true,
+    "adminPin": "cmrtc123",
+    "contactDesk": {
+      "location": "CMRTC Campus, Main Academic Block, Ground Floor (Admin / Security Desk)",
+      "phone": "+91 91007 60559",
+      "hours": "Monday – Saturday: 8:30 AM – 4:30 PM"
+    }
+  },
+  "items": [],
+  "claimRequests": []
+}
